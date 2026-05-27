@@ -1,0 +1,24 @@
+{
+  "generated_at": "2026-05-27T06:30:00.000Z",
+  "database_id": "1a623255-da14-4636-a230-5eb1d7a8b22e",
+  "tasks": [
+    { "title": "⑦ 관리자 기능 PR 리뷰 이해·반영", "track": "관리자", "type": "리뷰 반영", "status": "Done", "start": "2026-05-14", "end": "2026-05-22" },
+    { "title": "패스키 Spring Security 싱크", "track": "등록", "type": "PR 업로드", "status": "In progress", "start": "2026-05-27", "end": "2026-05-27" },
+    { "title": "front GNB·Settings PR 업로드", "track": "프론트", "type": "PR 업로드", "status": "In progress", "start": "2026-05-27", "end": "2026-05-28" },
+    { "title": "operation-api 진행 (PR까지)", "track": "관리자", "type": "개발", "status": "In progress", "start": "2026-05-27", "end": "2026-05-28" },
+    { "title": "등록 설계 PR 리뷰 대기", "track": "등록", "type": "리뷰 대기", "status": "Not started", "start": "2026-05-28", "end": "2026-05-28" },
+    { "title": "패스키 등록 구현체 개발 후 PR 업로드", "track": "등록", "type": "개발", "status": "Not started", "start": "2026-05-28", "end": "2026-05-29" },
+    { "title": "인증 설계 싱크", "track": "인증", "type": "개발", "status": "Not started", "start": "2026-05-29", "end": "2026-05-29" },
+    { "title": "operation-api PR 리뷰 대기", "track": "관리자", "type": "리뷰 대기", "status": "Not started", "start": "2026-05-29", "end": "2026-05-29" },
+    { "title": "frontend auth·services·user-profile 구현", "track": "프론트", "type": "개발", "status": "Not started", "start": "2026-06-01", "end": "2026-06-02" },
+    { "title": "인증 구현 후 PR 업로드", "track": "인증", "type": "리뷰 대기", "status": "Not started", "start": "2026-06-01", "end": "2026-06-02" },
+    { "title": "등록 구현 코드 리뷰 과정", "track": "등록", "type": "리뷰 반영", "status": "Not started", "start": "2026-06-01", "end": "2026-06-03" },
+    { "title": "operation-api 코드 리뷰 반영", "track": "관리자", "type": "리뷰 반영", "status": "Not started", "start": "2026-06-02", "end": "2026-06-02" },
+    { "title": "인증 PR 리뷰 반영", "track": "인증", "type": "리뷰 대기", "status": "Not started", "start": "2026-06-03", "end": "2026-06-08" },
+    { "title": "dev merge (최종)", "track": "마일스톤", "type": null, "status": "Not started", "start": "2026-06-09", "end": "2026-06-09" },
+    { "title": "메트릭 전략 싱크", "track": "메트릭", "type": "PR 업로드", "status": "Not started", "start": "2026-06-09", "end": "2026-06-10" },
+    { "title": "PM·PD 운영 피드백 내용 전달", "track": "마일스톤", "type": "마일스톤", "status": "Not started", "start": "2026-06-10", "end": "2026-06-12" },
+    { "title": "메트릭 PR 리뷰 대기", "track": "메트릭", "type": "리뷰 대기", "status": "Not started", "start": "2026-06-11", "end": "2026-06-12" },
+    { "title": "메트릭 코드 리뷰 반영", "track": "메트릭", "type": "리뷰 반영", "status": "Not started", "start": "2026-06-16", "end": "2026-06-16" }
+  ]
+}

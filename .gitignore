@@ -1,0 +1,8 @@
+node_modules/
+.env
+.env.local
+.DS_Store
+*.log
+
+# 주의: public/data.json 은 절대 무시하지 않는다.
+# Actions가 서빙하고, refresh-dashboard 스킬이 커밋하는 산출물이다.

@@ -1,0 +1,37 @@
+name: Deploy Dashboard
+
+# 배포 전담 워크플로.
+# - 데이터 fetch 는 하지 않는다(로컬 refresh-dashboard 스킬이 담당).
+# - public/** 가 push 되거나 수동 실행하면 현재 public/ 을 GitHub Pages 로 배포한다.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'public/**'
+
+# Pages 배포에 필요한 최소 권한. 커밋하지 않으므로 contents 는 read 만.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 동시 배포 충돌 방지. 진행 중 배포는 취소하지 않는다.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+      - id: deployment
+        uses: actions/deploy-pages@v4

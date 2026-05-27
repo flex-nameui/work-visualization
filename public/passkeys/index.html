@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light dark" />
+  <title>패스키 일정 대시보드</title>
+  <style>
+    :root {
+      --color-text-primary: #1F1E1B;
+      --color-text-secondary: #6F6D66;
+      --color-text-tertiary: #91918C;
+      --color-text-danger: #C03B36;
+      --color-text-warning: #B8810E;
+      --color-text-success: #3B6D11;
+      --color-background-primary: #FFFFFF;
+      --color-background-secondary: #F7F6F3;
+      --color-background-tertiary: #EFEEE9;
+      --color-border-tertiary: #E9E8E2;
+      --color-border-secondary: #D4D3CC;
+      --border-radius-md: 6px;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+      /* 상태 색 (전 위젯 공통) */
+      --status-done: #3B6D11;
+      --status-progress: #378ADD;
+      --status-pending: var(--color-background-tertiary);
+
+      --label-w: 76px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --color-text-primary: #F7F6F3;
+        --color-text-secondary: #B5B3AC;
+        --color-text-tertiary: #91918C;
+        --color-background-primary: #191918;
+        --color-background-secondary: #252523;
+        --color-background-tertiary: #2E2E2C;
+        --color-border-tertiary: #3A3A37;
+        --color-border-secondary: #4A4A47;
+        --status-done: #6CA838;
+        --status-progress: #4C9AEA;
+      }
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 24px;
+      background: var(--color-background-primary);
+      color: var(--color-text-primary);
+      font-family: var(--font-sans);
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container { max-width: 1100px; margin: 0 auto; }
+
+    .header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .header h1 { font-size: 20px; font-weight: 700; margin: 0; }
+    .header .updated {
+      font-size: 12px;
+      color: var(--color-text-tertiary);
+      font-family: var(--font-mono);
+    }
+
+    .card {
+      background: var(--color-background-secondary);
+      border: 1px solid var(--color-border-tertiary);
+      border-radius: var(--border-radius-md);
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .card-title { font-size: 14px; font-weight: 600; margin: 0 0 4px; }
+    .card-desc { font-size: 12px; color: var(--color-text-secondary); margin: 0 0 14px; }
+
+    /* KPI */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+    }
+    .kpi {
+      background: var(--color-background-primary);
+      border: 1px solid var(--color-border-tertiary);
+      border-radius: var(--border-radius-md);
+      padding: 14px 16px;
+    }
+    .kpi.clickable { cursor: pointer; }
+    .kpi.clickable:hover { border-color: var(--color-border-secondary); }
+    .kpi .label { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 6px; }
+    .kpi .value { font-size: 28px; font-weight: 700; line-height: 1.1; font-family: var(--font-mono); }
+    .kpi .sub { font-size: 11px; color: var(--color-text-tertiary); margin-top: 6px; }
+    .kpi .value.is-danger { color: var(--color-text-danger); }
+    .kpi .value.is-success { color: var(--color-text-success); }
+
+    /* 지연 작업 목록 패널 */
+    .delayed-panel {
+      margin-top: 12px;
+      border: 1px solid var(--color-border-tertiary);
+      border-radius: var(--border-radius-md);
+      background: var(--color-background-primary);
+      padding: 12px 14px;
+    }
+    .delayed-panel .head { font-size: 12px; font-weight: 600; margin-bottom: 8px; color: var(--color-text-danger); }
+    .delayed-item {
+      display: flex; justify-content: space-between; gap: 12px;
+      padding: 6px 0; font-size: 12px;
+      border-top: 1px solid var(--color-border-tertiary);
+    }
+    .delayed-item:first-of-type { border-top: none; }
+    .delayed-item .meta { color: var(--color-text-tertiary); font-family: var(--font-mono); white-space: nowrap; }
+
+    /* Legend */
+    .legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 11px; color: var(--color-text-secondary); margin-top: 12px; }
+    .legend .item { display: inline-flex; align-items: center; gap: 5px; }
+    .legend .swatch { width: 11px; height: 11px; border-radius: 3px; display: inline-block; }
+    .swatch.done { background: var(--status-done); }
+    .swatch.progress { background: var(--status-progress); }
+    .swatch.pending { background: var(--status-pending); border: 1px solid var(--color-border-secondary); }
+
+    /* Gantt */
+    .gantt-scroll { overflow-x: auto; }
+    .gantt { min-width: 560px; position: relative; }
+    .gantt-row { display: flex; align-items: stretch; }
+    .gantt-row .label-col {
+      flex: 0 0 var(--label-w);
+      width: var(--label-w);
+      font-size: 12px;
+      color: var(--color-text-secondary);
+      padding: 4px 8px 4px 0;
+      display: flex;
+      align-items: center;
+    }
+    .gantt-axis { flex: 1; position: relative; height: 20px; }
+    .gantt-axis .wk {
+      position: absolute;
+      top: 0;
+      font-size: 10px;
+      color: var(--color-text-tertiary);
+      font-family: var(--font-mono);
+      transform: translateX(-1px);
+      white-space: nowrap;
+    }
+    .gantt-lane { flex: 1; position: relative; }
+    .gantt-bar {
+      position: absolute;
+      height: 18px;
+      border-radius: 4px;
+      font-size: 10px;
+      line-height: 18px;
+      color: #fff;
+      padding: 0 6px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    .gantt-bar.done { background: var(--status-done); }
+    .gantt-bar.progress { background: var(--status-progress); }
+    .gantt-bar.pending {
+      background: var(--status-pending);
+      color: var(--color-text-secondary);
+      border: 1px solid var(--color-border-secondary);
+      line-height: 16px;
+    }
+    /* 세로 격자 + 오늘선 오버레이 (라벨 컬럼 이후 영역에만) */
+    .gantt-overlay { position: absolute; left: var(--label-w); right: 0; top: 0; bottom: 0; pointer-events: none; }
+    .gantt-grid { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--color-border-tertiary); }
+    .gantt-today { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--color-text-danger); }
+    .gantt-today .tip {
+      position: absolute; top: -18px; left: 50%; transform: translateX(-50%);
+      font-size: 9px; color: #fff; background: var(--color-text-danger);
+      padding: 1px 4px; border-radius: 3px; white-space: nowrap;
+    }
+
+    /* Progress bars */
+    .tprog-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .tprog-row .label { flex: 0 0 64px; font-size: 12px; color: var(--color-text-secondary); }
+    .tprog-bar { flex: 1; height: 18px; border-radius: 4px; overflow: hidden; display: flex; background: var(--status-pending); border: 1px solid var(--color-border-tertiary); }
+    .tprog-seg { height: 100%; }
+    .tprog-seg.done { background: var(--status-done); }
+    .tprog-seg.progress { background: var(--status-progress); }
+    .tprog-count { flex: 0 0 auto; font-size: 11px; color: var(--color-text-tertiary); font-family: var(--font-mono); min-width: 130px; text-align: right; }
+
+    /* Kanban */
+    .kanban { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+    .kanban-col {
+      background: var(--color-background-primary);
+      border: 1px solid var(--color-border-tertiary);
+      border-radius: var(--border-radius-md);
+      padding: 12px;
+    }
+    .kanban-col .stage { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 4px; }
+    .kanban-col .count { font-size: 24px; font-weight: 700; font-family: var(--font-mono); }
+    .kanban-mini { display: flex; height: 6px; border-radius: 3px; overflow: hidden; margin-top: 10px; background: var(--status-pending); }
+    .kanban-mini .seg.done { background: var(--status-done); }
+    .kanban-mini .seg.progress { background: var(--status-progress); }
+    .kanban-col .breakdown { font-size: 10px; color: var(--color-text-tertiary); margin-top: 6px; font-family: var(--font-mono); }
+
+    /* 에러 / 빈 상태 */
+    .error-state, .empty-state { text-align: center; padding: 40px 16px; color: var(--color-text-secondary); }
+    .error-state button {
+      margin-top: 12px; padding: 6px 14px; font-size: 13px; cursor: pointer;
+      background: var(--color-background-tertiary); color: var(--color-text-primary);
+      border: 1px solid var(--color-border-secondary); border-radius: var(--border-radius-md);
+    }
+    .error-state small { color: var(--color-text-tertiary); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>패스키 일정 대시보드</h1>
+      <span class="updated">마지막 갱신: <span id="updated-at">…</span></span>
+    </div>
+    <div id="dash-root"></div>
+  </div>
+
+  <script>
+    "use strict";
+
+    const DAY = 86400000;
+    const TRACK_ORDER = ["등록", "인증", "관리자", "프론트", "메트릭", "마일스톤"];
+    const TYPE_ORDER = ["개발", "PR 업로드", "리뷰 대기", "리뷰 반영", "마일스톤"];
+
+    // ---------- 공통 유틸 ----------
+    function esc(s) {
+      return String(s ?? "").replace(/[&<>"']/g, (c) =>
+        ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    }
+    function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+    function parseUTC(s) { const [y, m, d] = s.split("-").map(Number); return Date.UTC(y, m - 1, d); }
+    function statusKind(s) {
+      if (s === "Done") return "done";
+      if (s === "In progress") return "progress";
+      return "pending";
+    }
+    const isDone = (s) => statusKind(s) === "done";
+
+    // ---------- 데이터 변환 ----------
+    function transformTasks(rawTasks) {
+      const dated = rawTasks.filter((t) => t.start);
+      const now = new Date();
+      const todayMs = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+
+      if (dated.length === 0) {
+        return { START: todayMs, TOTAL_DAYS: 1, TODAY: 0, tasks: rawTasks.map((t) => ({ ...t, startOffset: null, endOffset: null, durationDays: 0 })) };
+      }
+
+      const minMs = Math.min(...dated.map((t) => parseUTC(t.start)));
+      const maxMs = Math.max(...dated.map((t) => parseUTC(t.end || t.start)));
+      // START 를 그 주의 월요일로 보정 (주 구분선 정렬)
+      const dow = new Date(minMs).getUTCDay(); // 0(일)..6(토)
+      const back = (dow + 6) % 7;
+      const START = minMs - back * DAY;
+      const TOTAL_DAYS = Math.floor((maxMs - START) / DAY) + 1;
+      const TODAY = Math.floor((todayMs - START) / DAY);
+
+      const tasks = rawTasks.map((t) => {
+        if (!t.start) return { ...t, startOffset: null, endOffset: null, durationDays: 0 };
+        const s = Math.floor((parseUTC(t.start) - START) / DAY);
+        const e = Math.max(Math.floor((parseUTC(t.end || t.start) - START) / DAY), s);
+        return { ...t, startOffset: s, endOffset: e, durationDays: e - s + 1 };
+      });
+
+      return { START, TOTAL_DAYS, TODAY, tasks };
+    }
+
+    function offsetToDate(model, off) { return new Date(model.START + off * DAY); }
+    function md(model, off) {
+      const d = offsetToDate(model, off);
+      return `${d.getUTCMonth() + 1}/${String(d.getUTCDate()).padStart(2, "0")}`;
+    }
+
+    function renderLastUpdated(iso) {
+      const el = document.getElementById("updated-at");
+      if (!iso) { el.textContent = "-"; return; }
+      const d = new Date(iso);
+      const fmt = new Intl.DateTimeFormat("ko-KR", {
+        timeZone: "Asia/Seoul", year: "numeric", month: "2-digit", day: "2-digit",
+        hour: "2-digit", minute: "2-digit", hour12: false,
+      });
+      const p = Object.fromEntries(fmt.formatToParts(d).map((x) => [x.type, x.value]));
+      el.textContent = `${p.year}-${p.month}-${p.day} ${p.hour}:${p.minute}`;
+    }
+
+    // ---------- KPI 카드 ----------
+    function renderKPI(model) {
+      const root = document.getElementById("kpi-body");
+      const { tasks, TODAY, TOTAL_DAYS } = model;
+      const dated = tasks.filter((t) => t.startOffset !== null);
+
+      const totalDur = dated.reduce((s, t) => s + t.durationDays, 0);
+      const doneDur = dated.filter((t) => isDone(t.status)).reduce((s, t) => s + t.durationDays, 0);
+      const workPct = totalDur ? Math.round((doneDur / totalDur) * 100) : 0;
+
+      const timePct = TOTAL_DAYS > 1 ? Math.round(clamp(TODAY / (TOTAL_DAYS - 1), 0, 1) * 100) : (TODAY >= 0 ? 100 : 0);
+
+      const lastEnd = dated.length ? Math.max(...dated.map((t) => t.endOffset)) : 0;
+      const remaining = lastEnd - TODAY;
+      const doneCount = tasks.filter((t) => isDone(t.status)).length;
+
+      const delayedTasks = dated
+        .filter((t) => t.endOffset < TODAY && !isDone(t.status))
+        .sort((a, b) => a.endOffset - b.endOffset)
+        .map((t) => ({ title: t.title, track: t.track, end: md(model, t.endOffset), overdue: TODAY - t.endOffset }));
+      const delayed = delayedTasks.length;
+
+      const cards = [
+        { label: "작업 진척률", value: `${workPct}%`, sub: `기간가중 · 완료 ${doneCount}/${tasks.length}개`,
+          cls: workPct >= timePct ? "is-success" : "" },
+        { label: "시간 진척률", value: `${timePct}%`, sub: dated.length ? `${md(model, 0)} ~ ${md(model, TOTAL_DAYS - 1)}` : "-" },
+        { label: "잔여 일수", value: remaining >= 0 ? `D-${remaining}` : `+${-remaining}일`,
+          sub: dated.length ? `마지막 종료 ${md(model, lastEnd)}` : "-", cls: remaining < 0 ? "is-danger" : "" },
+        { label: "지연 작업", value: `${delayed}`,
+          sub: delayed > 0 ? "클릭해서 목록 보기 ▾" : "종료일 지난 미완료 없음",
+          cls: delayed > 0 ? "is-danger" : "is-success", clickable: delayed > 0 },
+      ];
+
+      root.innerHTML = cards.map((c) => `
+        <div class="kpi ${c.clickable ? "clickable" : ""}" ${c.clickable ? 'onclick="toggleDelayed()"' : ""}>
+          <div class="label">${esc(c.label)}</div>
+          <div class="value ${c.cls || ""}">${esc(c.value)}</div>
+          <div class="sub">${esc(c.sub)}</div>
+        </div>`).join("");
+
+      // 지연 작업 목록 패널 채우기
+      const panel = document.getElementById("delayed-panel");
+      if (delayed > 0) {
+        panel.dataset.has = "1";
+        panel.hidden = true; // 클릭 전까지 접힘
+        panel.innerHTML =
+          `<div class="head">지연 작업 ${delayed}건 (종료일이 지났는데 아직 완료되지 않음)</div>` +
+          delayedTasks.map((t) => `
+            <div class="delayed-item">
+              <span>${esc(t.title)}</span>
+              <span class="meta">${esc(t.track || "")} · 종료 ${esc(t.end)} · ${t.overdue}일 지남</span>
+            </div>`).join("");
+      } else {
+        panel.dataset.has = "0";
+        panel.hidden = true;
+        panel.innerHTML = "";
+      }
+    }
+
+    function toggleDelayed() {
+      const p = document.getElementById("delayed-panel");
+      if (p && p.dataset.has === "1") p.hidden = !p.hidden;
+    }
+
+    // ---------- Gantt 타임라인 ----------
+    function assignRows(tasks) {
+      const rowEnds = [];
+      const placement = [];
+      for (const t of tasks) {
+        let placed = false;
+        for (let i = 0; i < rowEnds.length; i++) {
+          if (rowEnds[i] < t.startOffset) { rowEnds[i] = t.endOffset; placement.push(i); placed = true; break; }
+        }
+        if (!placed) { rowEnds.push(t.endOffset); placement.push(rowEnds.length - 1); }
+      }
+      return { rowCount: Math.max(rowEnds.length, 1), placement };
+    }
+
+    function renderGantt(model) {
+      const root = document.getElementById("gantt-body");
+      const { tasks, TOTAL_DAYS, TODAY } = model;
+      const dated = tasks.filter((t) => t.startOffset !== null);
+      if (dated.length === 0) { root.innerHTML = `<div class="empty-state">표시할 일정이 없습니다.</div>`; return; }
+
+      const ROW_H = 24;
+      const pct = (off) => (off / TOTAL_DAYS) * 100;
+
+      // 트랙 그룹핑 (고정 순서 + 나머지)
+      const byTrack = new Map();
+      for (const t of dated) {
+        const k = t.track || "(미지정)";
+        if (!byTrack.has(k)) byTrack.set(k, []);
+        byTrack.get(k).push(t);
+      }
+      const ordered = [...TRACK_ORDER.filter((k) => byTrack.has(k)),
+        ...[...byTrack.keys()].filter((k) => !TRACK_ORDER.includes(k))];
+
+      // 주(week) 구분선 + 라벨
+      let axis = "";
+      let grids = "";
+      for (let w = 0; w * 7 < TOTAL_DAYS; w++) {
+        const left = pct(w * 7);
+        axis += `<span class="wk" style="left:${left}%">${md(model, w * 7)}</span>`;
+        grids += `<div class="gantt-grid" style="left:${left}%"></div>`;
+      }
+
+      // 트랙 레인
+      let lanes = "";
+      for (const track of ordered) {
+        const items = byTrack.get(track).slice().sort((a, b) => a.startOffset - b.startOffset);
+        const { rowCount, placement } = assignRows(items);
+        const laneH = rowCount * ROW_H;
+        let bars = "";
+        items.forEach((t, i) => {
+          const kind = statusKind(t.status);
+          const left = pct(t.startOffset);
+          const width = Math.max(pct(t.durationDays), 1.2);
+          const top = placement[i] * ROW_H;
+          const title = `${t.title} (${t.start} ~ ${t.end}) · ${t.status ?? "-"}`;
+          bars += `<div class="gantt-bar ${kind}" style="left:${left}%;width:${width}%;top:${top}px" title="${esc(title)}">${esc(t.title)}</div>`;
+        });
+        lanes += `
+          <div class="gantt-row">
+            <div class="label-col">${esc(track)}</div>
+            <div class="gantt-lane" style="height:${laneH}px">${bars}</div>
+          </div>`;
+      }
+
+      // 오늘선 (범위 밖이면 가장자리 클램프)
+      const todayClamped = clamp(TODAY, 0, TOTAL_DAYS - 1);
+      const todayLeft = pct(todayClamped);
+      const outOfRange = TODAY < 0 || TODAY > TOTAL_DAYS - 1;
+      const todayTip = outOfRange ? "오늘(범위 밖)" : "오늘";
+
+      root.innerHTML = `
+        <div class="gantt-scroll">
+          <div class="gantt">
+            <div class="gantt-row">
+              <div class="label-col"></div>
+              <div class="gantt-axis">${axis}</div>
+            </div>
+            <div style="position:relative">
+              ${lanes}
+              <div class="gantt-overlay">
+                ${grids}
+                <div class="gantt-today" style="left:${todayLeft}%"><span class="tip">${esc(todayTip)}</span></div>
+              </div>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    // ---------- 트랙별 진행률 막대 ----------
+    function renderProgressBars(model) {
+      const root = document.getElementById("tprog-body");
+      const { tasks } = model;
+      const byTrack = new Map();
+      for (const t of tasks) {
+        const k = t.track || "(미지정)";
+        if (!byTrack.has(k)) byTrack.set(k, { done: 0, progress: 0, pending: 0, total: 0 });
+        const c = byTrack.get(k);
+        c[statusKind(t.status)]++;
+        c.total++;
+      }
+      const ordered = [...TRACK_ORDER.filter((k) => byTrack.has(k)),
+        ...[...byTrack.keys()].filter((k) => !TRACK_ORDER.includes(k))];
+
+      if (ordered.length === 0) { root.innerHTML = `<div class="empty-state">트랙 데이터가 없습니다.</div>`; return; }
+
+      root.innerHTML = ordered.map((track) => {
+        const c = byTrack.get(track);
+        const w = (n) => (c.total ? (n / c.total) * 100 : 0);
+        return `
+          <div class="tprog-row">
+            <div class="label">${esc(track)}</div>
+            <div class="tprog-bar">
+              <div class="tprog-seg done" style="width:${w(c.done)}%"></div>
+              <div class="tprog-seg progress" style="width:${w(c.progress)}%"></div>
+            </div>
+            <div class="tprog-count">완료 ${c.done} / 진행 ${c.progress} / 대기 ${c.pending}</div>
+          </div>`;
+      }).join("");
+    }
+
+    // ---------- Kanban 파이프라인 ----------
+    function renderKanban(model) {
+      const root = document.getElementById("pipe-body");
+      const { tasks } = model;
+      const byType = new Map();
+      for (const t of tasks) {
+        const k = t.type || "기타";
+        if (!byType.has(k)) byType.set(k, { done: 0, progress: 0, pending: 0, total: 0 });
+        const c = byType.get(k);
+        c[statusKind(t.status)]++;
+        c.total++;
+      }
+      const ordered = [...TYPE_ORDER.filter((k) => byType.has(k)),
+        ...[...byType.keys()].filter((k) => !TYPE_ORDER.includes(k))];
+
+      if (ordered.length === 0) { root.innerHTML = `<div class="empty-state">단계 데이터가 없습니다.</div>`; return; }
+
+      root.innerHTML = ordered.map((type) => {
+        const c = byType.get(type);
+        const w = (n) => (c.total ? (n / c.total) * 100 : 0);
+        return `
+          <div class="kanban-col">
+            <div class="stage">${esc(type)}</div>
+            <div class="count">${c.total}</div>
+            <div class="kanban-mini">
+              <div class="seg done" style="width:${w(c.done)}%"></div>
+              <div class="seg progress" style="width:${w(c.progress)}%"></div>
+            </div>
+            <div class="breakdown">완료 ${c.done} · 진행 ${c.progress} · 대기 ${c.pending}</div>
+          </div>`;
+      }).join("");
+    }
+
+    // ---------- 레이아웃 + 부트스트랩 ----------
+    const LEGEND = `
+      <div class="legend">
+        <span class="item"><span class="swatch done"></span>완료 (Done)</span>
+        <span class="item"><span class="swatch progress"></span>진행 중 (In progress)</span>
+        <span class="item"><span class="swatch pending"></span>대기 (Not started)</span>
+      </div>`;
+
+    function renderShell() {
+      document.getElementById("dash-root").innerHTML = `
+        <div class="card">
+          <div id="kpi-body" class="kpi-grid"></div>
+          <div id="delayed-panel" class="delayed-panel" hidden></div>
+          <p class="card-desc" style="margin:12px 0 0">작업 진척률이 시간 진척률보다 낮으면 일정이 뒤처지는 신호입니다. 진척률은 작업 기간으로 가중합니다. 지연 작업 카드를 누르면 어떤 작업이 늦었는지 볼 수 있어요.</p>
+        </div>
+        <div class="card">
+          <h2 class="card-title">일정 타임라인 (Gantt)</h2>
+          <p class="card-desc">트랙별 작업을 시작~종료 기간 막대로 표시합니다. 빨간 세로선이 오늘입니다.</p>
+          <div id="gantt-body"></div>
+          ${LEGEND}
+        </div>
+        <div class="card">
+          <h2 class="card-title">트랙별 진행률</h2>
+          <p class="card-desc">트랙마다 완료/진행/대기 작업 개수를 비율로 보여줍니다.</p>
+          <div id="tprog-body"></div>
+          ${LEGEND}
+        </div>
+        <div class="card">
+          <h2 class="card-title">단계별 파이프라인 (Kanban)</h2>
+          <p class="card-desc">작업 종류(단계)별 개수와 상태 분포입니다.</p>
+          <div id="pipe-body" class="kanban"></div>
+          ${LEGEND}
+        </div>`;
+    }
+
+    function showError(message) {
+      document.getElementById("dash-root").innerHTML = `
+        <div class="error-state">
+          데이터를 불러오지 못했어요<br>
+          <small>${esc(message)}</small><br>
+          <button onclick="location.reload()">재시도</button>
+        </div>`;
+    }
+
+    async function init() {
+      try {
+        const res = await fetch("./data.json", { cache: "no-store" });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        const model = transformTasks(data.tasks || []);
+        renderShell();
+        renderLastUpdated(data.generated_at);
+        renderKPI(model);
+        renderGantt(model);
+        renderProgressBars(model);
+        renderKanban(model);
+      } catch (err) {
+        showError(err.message || String(err));
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>

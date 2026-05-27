@@ -1,0 +1,12 @@
+{
+  "name": "work-visualization",
+  "version": "1.0.0",
+  "description": "노션 작업 일정을 GitHub Pages 정적 대시보드로 시각화 (패스키 일정 대시보드)",
+  "scripts": {
+    "dev": "http-server public -p 8080 -c-1"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}
