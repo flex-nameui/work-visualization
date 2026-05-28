@@ -27,7 +27,7 @@
       --status-progress: #378ADD;
       --status-pending: var(--color-background-tertiary);
 
-      --label-w: 76px;
+      --label-w: 330px;
     }
 
     @media (prefers-color-scheme: dark) {
@@ -132,7 +132,7 @@
 
     /* Gantt */
     .gantt-scroll { overflow-x: auto; }
-    .gantt { min-width: 560px; position: relative; }
+    .gantt { min-width: 820px; position: relative; }
     .gantt-row { display: flex; align-items: stretch; }
     .gantt-row .label-col {
       flex: 0 0 var(--label-w);
@@ -154,25 +154,43 @@
       white-space: nowrap;
     }
     .gantt-lane { flex: 1; position: relative; }
+    /* 작업당 한 줄: 제목은 왼쪽 칼럼에 전체로, 막대는 타임라인에만 */
+    .gantt-thead { font-size: 12px; font-weight: 700; color: var(--color-text-secondary); margin: 12px 0 2px; }
+    .gantt-trow { display: flex; align-items: center; min-height: 24px; }
+    .gantt-trow .gantt-tlabel {
+      flex: 0 0 var(--label-w); width: var(--label-w);
+      font-size: 12px; color: var(--color-text-primary);
+      padding: 2px 12px 2px 14px;
+      overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+    }
+    .gantt-trow .gantt-lane { height: 22px; }
+    /* 트랙별 일정 & 진행률 (통합 위젯) */
+    .sched-thead { display: flex; align-items: center; gap: 10px; margin: 14px 0 4px; font-size: 12px; }
+    .sched-thead .trk { font-weight: 700; color: var(--color-text-primary); min-width: 52px; }
+    .sched-thead .pbar { width: 120px; height: 12px; border-radius: 3px; overflow: hidden; display: flex; background: var(--status-pending); border: 1px solid var(--color-border-tertiary); }
+    .sched-thead .pbar .seg { height: 100%; }
+    .sched-thead .pbar .seg.done { background: var(--status-done); }
+    .sched-thead .pbar .seg.progress { background: var(--status-progress); }
+    .sched-thead .pcount { color: var(--color-text-tertiary); font-family: var(--font-mono); }
+    .sched-task { flex: 0 0 var(--label-w); width: var(--label-w); display: flex; align-items: center; gap: 7px; padding: 2px 10px 2px 16px; font-size: 12px; min-width: 0; }
+    .sched-task .dot { width: 8px; height: 8px; border-radius: 50%; flex: 0 0 auto; }
+    .sched-task .dot.done { background: var(--status-done); }
+    .sched-task .dot.progress { background: var(--status-progress); }
+    .sched-task .dot.pending { background: var(--color-border-secondary); }
+    .sched-task .ttl { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--color-text-primary); }
+    .sched-task .meta { flex: 0 0 auto; color: var(--color-text-tertiary); font-family: var(--font-mono); font-size: 10px; }
     .gantt-bar {
       position: absolute;
-      height: 18px;
+      top: 3px;
+      height: 16px;
+      min-width: 6px;
       border-radius: 4px;
-      font-size: 10px;
-      line-height: 18px;
-      color: #fff;
-      padding: 0 6px;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
     }
     .gantt-bar.done { background: var(--status-done); }
     .gantt-bar.progress { background: var(--status-progress); }
     .gantt-bar.pending {
       background: var(--status-pending);
-      color: var(--color-text-secondary);
       border: 1px solid var(--color-border-secondary);
-      line-height: 16px;
     }
     /* 세로 격자 + 오늘선 오버레이 (라벨 컬럼 이후 영역에만) */
     .gantt-overlay { position: absolute; left: var(--label-w); right: 0; top: 0; bottom: 0; pointer-events: none; }
@@ -301,9 +319,10 @@
       const { tasks, TODAY, TOTAL_DAYS } = model;
       const dated = tasks.filter((t) => t.startOffset !== null);
 
-      const totalDur = dated.reduce((s, t) => s + t.durationDays, 0);
-      const doneDur = dated.filter((t) => isDone(t.status)).reduce((s, t) => s + t.durationDays, 0);
-      const workPct = totalDur ? Math.round((doneDur / totalDur) * 100) : 0;
+      // 작업 진척률 = Point(공수) 가중. point 없으면 1로 간주. 날짜 없는 과거 작업도 포함(프로젝트 전체 기준).
+      const totalPt = tasks.reduce((s, t) => s + (t.point || 1), 0);
+      const donePt = tasks.filter((t) => isDone(t.status)).reduce((s, t) => s + (t.point || 1), 0);
+      const workPct = totalPt ? Math.round((donePt / totalPt) * 100) : 0;
 
       const timePct = TOTAL_DAYS > 1 ? Math.round(clamp(TODAY / (TOTAL_DAYS - 1), 0, 1) * 100) : (TODAY >= 0 ? 100 : 0);
 
@@ -318,7 +337,7 @@
       const delayed = delayedTasks.length;
 
       const cards = [
-        { label: "작업 진척률", value: `${workPct}%`, sub: `기간가중 · 완료 ${doneCount}/${tasks.length}개`,
+        { label: "작업 진척률", value: `${workPct}%`, sub: `Point 가중 · 완료 ${doneCount}/${tasks.length}개`,
           cls: workPct >= timePct ? "is-success" : "" },
         { label: "시간 진척률", value: `${timePct}%`, sub: dated.length ? `${md(model, 0)} ~ ${md(model, TOTAL_DAYS - 1)}` : "-" },
         { label: "잔여 일수", value: remaining >= 0 ? `D-${remaining}` : `+${-remaining}일`,
@@ -359,30 +378,24 @@
       if (p && p.dataset.has === "1") p.hidden = !p.hidden;
     }
 
-    // ---------- Gantt 타임라인 ----------
-    function assignRows(tasks) {
-      const rowEnds = [];
-      const placement = [];
-      for (const t of tasks) {
-        let placed = false;
-        for (let i = 0; i < rowEnds.length; i++) {
-          if (rowEnds[i] < t.startOffset) { rowEnds[i] = t.endOffset; placement.push(i); placed = true; break; }
-        }
-        if (!placed) { rowEnds.push(t.endOffset); placement.push(rowEnds.length - 1); }
-      }
-      return { rowCount: Math.max(rowEnds.length, 1), placement };
-    }
-
-    function renderGantt(model) {
-      const root = document.getElementById("gantt-body");
+    // ---------- 트랙별 일정 & 진행률 (왼쪽: 진행바+제목+날짜 / 오른쪽: 정렬된 타임라인) ----------
+    function renderSchedule(model) {
+      const root = document.getElementById("sched-body");
       const { tasks, TOTAL_DAYS, TODAY } = model;
       const dated = tasks.filter((t) => t.startOffset !== null);
       if (dated.length === 0) { root.innerHTML = `<div class="empty-state">표시할 일정이 없습니다.</div>`; return; }
 
-      const ROW_H = 24;
       const pct = (off) => (off / TOTAL_DAYS) * 100;
+      const range = (t) => t.startOffset === t.endOffset ? md(model, t.startOffset) : `${md(model, t.startOffset)}~${md(model, t.endOffset)}`;
 
-      // 트랙 그룹핑 (고정 순서 + 나머지)
+      // 트랙별 상태 집계 (프로젝트 전체 기준) — 진행바에 사용
+      const stat = new Map();
+      for (const t of tasks) {
+        const k = t.track || "(미지정)";
+        if (!stat.has(k)) stat.set(k, { done: 0, progress: 0, pending: 0, total: 0 });
+        const c = stat.get(k); c[statusKind(t.status)]++; c.total++;
+      }
+      // 날짜 있는 작업만 줄(막대)로 표시
       const byTrack = new Map();
       for (const t of dated) {
         const k = t.track || "(미지정)";
@@ -393,37 +406,41 @@
         ...[...byTrack.keys()].filter((k) => !TRACK_ORDER.includes(k))];
 
       // 주(week) 구분선 + 라벨
-      let axis = "";
-      let grids = "";
+      let axis = "", grids = "";
       for (let w = 0; w * 7 < TOTAL_DAYS; w++) {
         const left = pct(w * 7);
         axis += `<span class="wk" style="left:${left}%">${md(model, w * 7)}</span>`;
         grids += `<div class="gantt-grid" style="left:${left}%"></div>`;
       }
 
-      // 트랙 레인
-      let lanes = "";
+      let rows = "";
       for (const track of ordered) {
+        const c = stat.get(track) || { done: 0, progress: 0, pending: 0, total: 0 };
+        const wseg = (n) => (c.total ? (n / c.total) * 100 : 0);
+        rows += `
+          <div class="sched-thead">
+            <span class="trk">${esc(track)}</span>
+            <span class="pbar"><span class="seg done" style="width:${wseg(c.done)}%"></span><span class="seg progress" style="width:${wseg(c.progress)}%"></span></span>
+            <span class="pcount">완료 ${c.done}/${c.total}</span>
+          </div>`;
         const items = byTrack.get(track).slice().sort((a, b) => a.startOffset - b.startOffset);
-        const { rowCount, placement } = assignRows(items);
-        const laneH = rowCount * ROW_H;
-        let bars = "";
-        items.forEach((t, i) => {
+        for (const t of items) {
           const kind = statusKind(t.status);
           const left = pct(t.startOffset);
-          const width = Math.max(pct(t.durationDays), 1.2);
-          const top = placement[i] * ROW_H;
-          const title = `${t.title} (${t.start} ~ ${t.end}) · ${t.status ?? "-"}`;
-          bars += `<div class="gantt-bar ${kind}" style="left:${left}%;width:${width}%;top:${top}px" title="${esc(title)}">${esc(t.title)}</div>`;
-        });
-        lanes += `
-          <div class="gantt-row">
-            <div class="label-col">${esc(track)}</div>
-            <div class="gantt-lane" style="height:${laneH}px">${bars}</div>
-          </div>`;
+          const width = Math.max(pct(t.durationDays), 0.8);
+          const ttl = `${t.title} (${t.start} ~ ${t.end}) · ${t.status ?? "-"}`;
+          rows += `
+            <div class="gantt-trow">
+              <div class="sched-task" title="${esc(ttl)}">
+                <span class="dot ${kind}"></span>
+                <span class="ttl">${esc(t.title)}</span>
+                <span class="meta">${range(t)} · ${t.point}P</span>
+              </div>
+              <div class="gantt-lane"><div class="gantt-bar ${kind}" style="left:${left}%;width:${width}%" title="${esc(ttl)}"></div></div>
+            </div>`;
+        }
       }
 
-      // 오늘선 (범위 밖이면 가장자리 클램프)
       const todayClamped = clamp(TODAY, 0, TOTAL_DAYS - 1);
       const todayLeft = pct(todayClamped);
       const outOfRange = TODAY < 0 || TODAY > TOTAL_DAYS - 1;
@@ -437,7 +454,7 @@
               <div class="gantt-axis">${axis}</div>
             </div>
             <div style="position:relative">
-              ${lanes}
+              ${rows}
               <div class="gantt-overlay">
                 ${grids}
                 <div class="gantt-today" style="left:${todayLeft}%"><span class="tip">${esc(todayTip)}</span></div>
@@ -447,37 +464,7 @@
         </div>`;
     }
 
-    // ---------- 트랙별 진행률 막대 ----------
-    function renderProgressBars(model) {
-      const root = document.getElementById("tprog-body");
-      const { tasks } = model;
-      const byTrack = new Map();
-      for (const t of tasks) {
-        const k = t.track || "(미지정)";
-        if (!byTrack.has(k)) byTrack.set(k, { done: 0, progress: 0, pending: 0, total: 0 });
-        const c = byTrack.get(k);
-        c[statusKind(t.status)]++;
-        c.total++;
-      }
-      const ordered = [...TRACK_ORDER.filter((k) => byTrack.has(k)),
-        ...[...byTrack.keys()].filter((k) => !TRACK_ORDER.includes(k))];
-
-      if (ordered.length === 0) { root.innerHTML = `<div class="empty-state">트랙 데이터가 없습니다.</div>`; return; }
-
-      root.innerHTML = ordered.map((track) => {
-        const c = byTrack.get(track);
-        const w = (n) => (c.total ? (n / c.total) * 100 : 0);
-        return `
-          <div class="tprog-row">
-            <div class="label">${esc(track)}</div>
-            <div class="tprog-bar">
-              <div class="tprog-seg done" style="width:${w(c.done)}%"></div>
-              <div class="tprog-seg progress" style="width:${w(c.progress)}%"></div>
-            </div>
-            <div class="tprog-count">완료 ${c.done} / 진행 ${c.progress} / 대기 ${c.pending}</div>
-          </div>`;
-      }).join("");
-    }
+    // (트랙별 진행률은 renderSchedule 로 통합됨)
 
     // ---------- Kanban 파이프라인 ----------
     function renderKanban(model) {
@@ -525,18 +512,12 @@
         <div class="card">
           <div id="kpi-body" class="kpi-grid"></div>
           <div id="delayed-panel" class="delayed-panel" hidden></div>
-          <p class="card-desc" style="margin:12px 0 0">작업 진척률이 시간 진척률보다 낮으면 일정이 뒤처지는 신호입니다. 진척률은 작업 기간으로 가중합니다. 지연 작업 카드를 누르면 어떤 작업이 늦었는지 볼 수 있어요.</p>
+          <p class="card-desc" style="margin:12px 0 0">작업 진척률이 시간 진척률보다 낮으면 일정이 뒤처지는 신호입니다. 진척률은 Linear의 Point(공수)로 가중하며 프로젝트 전체 기준입니다. 지연 작업 카드를 누르면 어떤 작업이 늦었는지 볼 수 있어요.</p>
         </div>
         <div class="card">
-          <h2 class="card-title">일정 타임라인 (Gantt)</h2>
-          <p class="card-desc">트랙별 작업을 시작~종료 기간 막대로 표시합니다. 빨간 세로선이 오늘입니다.</p>
-          <div id="gantt-body"></div>
-          ${LEGEND}
-        </div>
-        <div class="card">
-          <h2 class="card-title">트랙별 진행률</h2>
-          <p class="card-desc">트랙마다 완료/진행/대기 작업 개수를 비율로 보여줍니다.</p>
-          <div id="tprog-body"></div>
+          <h2 class="card-title">트랙별 일정 &amp; 진행률</h2>
+          <p class="card-desc">트랙 진행률 막대 아래에 그 트랙 작업을 한 줄씩(제목·날짜·Point) 두고, 오른쪽에 같은 줄로 일정 막대를 정렬했습니다. 왼쪽만 봐도 내용이 다 보이고, 오른쪽은 시간 위치를 보조로 보여줍니다. 빨간 세로선이 오늘입니다.</p>
+          <div id="sched-body"></div>
           ${LEGEND}
         </div>
         <div class="card">
@@ -565,8 +546,7 @@
         renderShell();
         renderLastUpdated(data.generated_at);
         renderKPI(model);
-        renderGantt(model);
-        renderProgressBars(model);
+        renderSchedule(model);
         renderKanban(model);
       } catch (err) {
         showError(err.message || String(err));
