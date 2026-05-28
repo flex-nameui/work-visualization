@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-28T12:57:59.000Z",
+  "generated_at": "2026-05-28T13:03:10.000Z",
   "source": "linear",
   "project": "패스키 구현",
   "tasks": [
@@ -31,6 +31,15 @@
       "point": 1
     },
     {
+      "title": "operation-api 개발 및 PR 업로드",
+      "track": "관리자",
+      "type": "개발",
+      "status": "In progress",
+      "start": "2026-05-27",
+      "end": "2026-05-28",
+      "point": 4
+    },
+    {
       "title": "등록 설계 PR 피드백 반영",
       "track": "등록",
       "type": "리뷰 대기",
@@ -38,15 +47,6 @@
       "start": "2026-05-27",
       "end": "2026-05-28",
       "point": 8
-    },
-    {
-      "title": "operation-api 개발 및 PR 업로드",
-      "track": "관리자",
-      "type": "개발",
-      "status": "Not started",
-      "start": "2026-05-27",
-      "end": "2026-05-28",
-      "point": 4
     },
     {
       "title": "frontend gnb, settings PR 업로드",
@@ -70,7 +70,7 @@
       "title": "인증 설계 싱크",
       "track": "인증",
       "type": "개발",
-      "status": "Not started",
+      "status": "In progress",
       "start": "2026-05-28",
       "end": "2026-05-29",
       "point": 1
@@ -94,6 +94,15 @@
       "point": 8
     },
     {
+      "title": "frontend auth·services·user-profile 개발 (구현)",
+      "track": "프론트",
+      "type": "개발",
+      "status": "In progress",
+      "start": "2026-06-01",
+      "end": "2026-06-02",
+      "point": 8
+    },
+    {
       "title": "등록 구현 코드 리뷰 반영",
       "track": "등록",
       "type": "리뷰 반영",
@@ -101,15 +110,6 @@
       "start": "2026-06-01",
       "end": "2026-06-03",
       "point": 4
-    },
-    {
-      "title": "frontend auth·services·user-profile 개발 (구현)",
-      "track": "프론트",
-      "type": "개발",
-      "status": "Not started",
-      "start": "2026-06-01",
-      "end": "2026-06-02",
-      "point": 8
     },
     {
       "title": "operation-api 코드 리뷰 반영",
