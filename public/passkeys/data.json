@@ -1,24 +1,547 @@
 {
-  "generated_at": "2026-05-27T06:30:00.000Z",
-  "database_id": "1a623255-da14-4636-a230-5eb1d7a8b22e",
+  "generated_at": "2026-05-28T12:57:59.000Z",
+  "source": "linear",
+  "project": "패스키 구현",
   "tasks": [
-    { "title": "⑦ 관리자 기능 PR 리뷰 이해·반영", "track": "관리자", "type": "리뷰 반영", "status": "Done", "start": "2026-05-14", "end": "2026-05-22" },
-    { "title": "패스키 Spring Security 싱크", "track": "등록", "type": "PR 업로드", "status": "In progress", "start": "2026-05-27", "end": "2026-05-27" },
-    { "title": "front GNB·Settings PR 업로드", "track": "프론트", "type": "PR 업로드", "status": "In progress", "start": "2026-05-27", "end": "2026-05-28" },
-    { "title": "operation-api 진행 (PR까지)", "track": "관리자", "type": "개발", "status": "In progress", "start": "2026-05-27", "end": "2026-05-28" },
-    { "title": "등록 설계 PR 리뷰 대기", "track": "등록", "type": "리뷰 대기", "status": "Not started", "start": "2026-05-28", "end": "2026-05-28" },
-    { "title": "패스키 등록 구현체 개발 후 PR 업로드", "track": "등록", "type": "개발", "status": "Not started", "start": "2026-05-28", "end": "2026-05-29" },
-    { "title": "인증 설계 싱크", "track": "인증", "type": "개발", "status": "Not started", "start": "2026-05-29", "end": "2026-05-29" },
-    { "title": "operation-api PR 리뷰 대기", "track": "관리자", "type": "리뷰 대기", "status": "Not started", "start": "2026-05-29", "end": "2026-05-29" },
-    { "title": "frontend auth·services·user-profile 구현", "track": "프론트", "type": "개발", "status": "Not started", "start": "2026-06-01", "end": "2026-06-02" },
-    { "title": "인증 구현 후 PR 업로드", "track": "인증", "type": "리뷰 대기", "status": "Not started", "start": "2026-06-01", "end": "2026-06-02" },
-    { "title": "등록 구현 코드 리뷰 과정", "track": "등록", "type": "리뷰 반영", "status": "Not started", "start": "2026-06-01", "end": "2026-06-03" },
-    { "title": "operation-api 코드 리뷰 반영", "track": "관리자", "type": "리뷰 반영", "status": "Not started", "start": "2026-06-02", "end": "2026-06-02" },
-    { "title": "인증 PR 리뷰 반영", "track": "인증", "type": "리뷰 대기", "status": "Not started", "start": "2026-06-03", "end": "2026-06-08" },
-    { "title": "dev merge (최종)", "track": "마일스톤", "type": null, "status": "Not started", "start": "2026-06-09", "end": "2026-06-09" },
-    { "title": "메트릭 전략 싱크", "track": "메트릭", "type": "PR 업로드", "status": "Not started", "start": "2026-06-09", "end": "2026-06-10" },
-    { "title": "PM·PD 운영 피드백 내용 전달", "track": "마일스톤", "type": "마일스톤", "status": "Not started", "start": "2026-06-10", "end": "2026-06-12" },
-    { "title": "메트릭 PR 리뷰 대기", "track": "메트릭", "type": "리뷰 대기", "status": "Not started", "start": "2026-06-11", "end": "2026-06-12" },
-    { "title": "메트릭 코드 리뷰 반영", "track": "메트릭", "type": "리뷰 반영", "status": "Not started", "start": "2026-06-16", "end": "2026-06-16" }
+    {
+      "title": "패스키 등록 설계 PR",
+      "track": "등록",
+      "type": "PR 업로드",
+      "status": "Done",
+      "start": "2026-05-11",
+      "end": "2026-05-12",
+      "point": 2
+    },
+    {
+      "title": "관리자 기능 PR 리뷰 이해·반영",
+      "track": "관리자",
+      "type": "리뷰 반영",
+      "status": "Done",
+      "start": "2026-05-14",
+      "end": "2026-05-22",
+      "point": 1
+    },
+    {
+      "title": "front GNB·Settings 리뷰 반영",
+      "track": "프론트",
+      "type": "리뷰 반영",
+      "status": "Done",
+      "start": "2026-05-14",
+      "end": "2026-05-15",
+      "point": 1
+    },
+    {
+      "title": "등록 설계 PR 피드백 반영",
+      "track": "등록",
+      "type": "리뷰 대기",
+      "status": "In progress",
+      "start": "2026-05-27",
+      "end": "2026-05-28",
+      "point": 8
+    },
+    {
+      "title": "operation-api 개발 및 PR 업로드",
+      "track": "관리자",
+      "type": "개발",
+      "status": "Not started",
+      "start": "2026-05-27",
+      "end": "2026-05-28",
+      "point": 4
+    },
+    {
+      "title": "frontend gnb, settings PR 업로드",
+      "track": "프론트",
+      "type": "PR 업로드",
+      "status": "Done",
+      "start": "2026-05-27",
+      "end": "2026-05-28",
+      "point": 2
+    },
+    {
+      "title": "패스키 Spring Security 싱크",
+      "track": "등록",
+      "type": "PR 업로드",
+      "status": "Done",
+      "start": "2026-05-27",
+      "end": "2026-05-27",
+      "point": 1
+    },
+    {
+      "title": "인증 설계 싱크",
+      "track": "인증",
+      "type": "개발",
+      "status": "Not started",
+      "start": "2026-05-28",
+      "end": "2026-05-29",
+      "point": 1
+    },
+    {
+      "title": "operation-api PR 리뷰 대기",
+      "track": "관리자",
+      "type": "리뷰 대기",
+      "status": "Not started",
+      "start": "2026-05-29",
+      "end": "2026-05-29",
+      "point": 1
+    },
+    {
+      "title": "패스키 등록 구현체 개발 후 PR",
+      "track": "등록",
+      "type": "개발",
+      "status": "Not started",
+      "start": "2026-05-29",
+      "end": "2026-06-01",
+      "point": 8
+    },
+    {
+      "title": "등록 구현 코드 리뷰 반영",
+      "track": "등록",
+      "type": "리뷰 반영",
+      "status": "Not started",
+      "start": "2026-06-01",
+      "end": "2026-06-03",
+      "point": 4
+    },
+    {
+      "title": "frontend auth·services·user-profile 개발 (구현)",
+      "track": "프론트",
+      "type": "개발",
+      "status": "Not started",
+      "start": "2026-06-01",
+      "end": "2026-06-02",
+      "point": 8
+    },
+    {
+      "title": "operation-api 코드 리뷰 반영",
+      "track": "관리자",
+      "type": "리뷰 반영",
+      "status": "Not started",
+      "start": "2026-06-02",
+      "end": "2026-06-02",
+      "point": 4
+    },
+    {
+      "title": "패스키 인증 개발 및 PR 업로드",
+      "track": "인증",
+      "type": "리뷰 대기",
+      "status": "Not started",
+      "start": "2026-06-02",
+      "end": "2026-06-03",
+      "point": 8
+    },
+    {
+      "title": "dev merge (최종)",
+      "track": "마일스톤",
+      "type": "마일스톤",
+      "status": "Not started",
+      "start": "2026-06-03",
+      "end": "2026-06-03",
+      "point": 4
+    },
+    {
+      "title": "패스키 인증 코드 리뷰 반영",
+      "track": "인증",
+      "type": "리뷰 대기",
+      "status": "Not started",
+      "start": "2026-06-04",
+      "end": "2026-06-09",
+      "point": 8
+    },
+    {
+      "title": "메트릭 전략 싱크",
+      "track": "메트릭",
+      "type": "PR 업로드",
+      "status": "Not started",
+      "start": "2026-06-09",
+      "end": "2026-06-10",
+      "point": 4
+    },
+    {
+      "title": "PM·PD 운영 피드백 내용 전달",
+      "track": "마일스톤",
+      "type": "마일스톤",
+      "status": "Not started",
+      "start": "2026-06-11",
+      "end": "2026-06-15",
+      "point": 4
+    },
+    {
+      "title": "메트릭 PR 리뷰 대기",
+      "track": "메트릭",
+      "type": "리뷰 대기",
+      "status": "Not started",
+      "start": "2026-06-11",
+      "end": "2026-06-12",
+      "point": 1
+    },
+    {
+      "title": "variant 환경 조사하기",
+      "track": null,
+      "type": null,
+      "status": "Done",
+      "start": null,
+      "end": null,
+      "point": 2
+    },
+    {
+      "title": "패스키 관리자 기능, 사용자 기능(등록, 해제) 오프라인 PR 준비",
+      "track": null,
+      "type": null,
+      "status": "Done",
+      "start": null,
+      "end": null,
+      "point": 4
+    },
+    {
+      "title": "패스키 설정 통합 테스트 코드 추가",
+      "track": null,
+      "type": null,
+      "status": "Done",
+      "start": null,
+      "end": null,
+      "point": 2
+    },
+    {
+      "title": "패스키 인증 통합 테스트 코드 추가",
+      "track": null,
+      "type": null,
+      "status": "Done",
+      "start": null,
+      "end": null,
+      "point": 2
+    },
+    {
+      "title": "패스키 등록 통합 테스트 코드 추가",
+      "track": null,
+      "type": null,
+      "status": "Done",
+      "start": null,
+      "end": null,
+      "point": 2
+    },
+    {
+      "title": "Standalone Refactoring : init.sql 에서 TestInitializer로",
+      "track": null,
+      "type": null,
+      "status": "Done",
+      "start": null,
+      "end": null,
+      "point": 2
+    },
+    {
+      "title": "패스키 기능 PR을 위한 문서화 및 PR 등록",
+      "track": null,
+      "type": null,
+      "status": "Done",
+      "start": null,
+      "end": null,
+      "point": 1
+    },
+    {
+      "title": "패스키 설정 구체화 계획",
+      "track": null,
+      "type": null,
+      "status": "Done",
+      "start": null,
+      "end": null,
+      "point": 2
+    },
+    {
+      "title": "패스키 세션 초안 준비 for PM",
+      "track": null,
+      "type": null,
+      "status": "Done",
+      "start": null,
+      "end": null,
+      "point": 2
+    },
+    {
+      "title": "패스키 2차 인증 도입 프로세스 조사",
+      "track": null,
+      "type": null,
+      "status": "Done",
+      "start": null,
+      "end": null,
+      "point": 2
+    },
+    {
+      "title": "패스키 E2E 테스트 자동화",
+      "track": null,
+      "type": null,
+      "status": "Done",
+      "start": null,
+      "end": null,
+      "point": 2
+    },
+    {
+      "title": "패스키 E2E 테스트 자동화 방법 조사",
+      "track": null,
+      "type": null,
+      "status": "Done",
+      "start": null,
+      "end": null,
+      "point": 1
+    },
+    {
+      "title": "패스키 구현 셀프 리뷰 및 구현 이유 적기",
+      "track": null,
+      "type": null,
+      "status": "Done",
+      "start": null,
+      "end": null,
+      "point": 2
+    },
+    {
+      "title": "패스키 기능들 클로드 코드 리뷰 반영",
+      "track": null,
+      "type": null,
+      "status": "Done",
+      "start": null,
+      "end": null,
+      "point": 2
+    },
+    {
+      "title": "패스키 설정/등록/인증 통합 테스트 작성",
+      "track": null,
+      "type": null,
+      "status": "Not started",
+      "start": null,
+      "end": null,
+      "point": 2
+    },
+    {
+      "title": "패스키 구현 코드 최종 검토 및 개선",
+      "track": null,
+      "type": null,
+      "status": "Done",
+      "start": null,
+      "end": null,
+      "point": 4
+    },
+    {
+      "title": "패스키 PoC 고도화",
+      "track": null,
+      "type": null,
+      "status": "Done",
+      "start": null,
+      "end": null,
+      "point": 4
+    },
+    {
+      "title": "패스키 설정, 등록, 인증 재재구현 계획",
+      "track": null,
+      "type": null,
+      "status": "Done",
+      "start": null,
+      "end": null,
+      "point": 2
+    },
+    {
+      "title": "패스키 등록, 인증 재구현 PoC 개발",
+      "track": null,
+      "type": null,
+      "status": "Done",
+      "start": null,
+      "end": null,
+      "point": 4
+    },
+    {
+      "title": "Passkey 활성화/비활성화/상태 확인 API PR 올리기",
+      "track": null,
+      "type": null,
+      "status": "Done",
+      "start": null,
+      "end": null,
+      "point": 1
+    },
+    {
+      "title": "패스키 등록 PR 올리기",
+      "track": null,
+      "type": null,
+      "status": "Done",
+      "start": null,
+      "end": null,
+      "point": 2
+    },
+    {
+      "title": "바이 위클리 발표 준비",
+      "track": null,
+      "type": null,
+      "status": "Done",
+      "start": null,
+      "end": null,
+      "point": 4
+    },
+    {
+      "title": "패스키 등록 Standalone",
+      "track": null,
+      "type": null,
+      "status": "Done",
+      "start": null,
+      "end": null,
+      "point": 4
+    },
+    {
+      "title": "Passkey 등록 프론트 구현",
+      "track": null,
+      "type": null,
+      "status": "Done",
+      "start": null,
+      "end": null,
+      "point": 2
+    },
+    {
+      "title": "패스키 등록 콜백 API",
+      "track": null,
+      "type": null,
+      "status": "Done",
+      "start": null,
+      "end": null,
+      "point": 4
+    },
+    {
+      "title": "패스키 등록 요청 API",
+      "track": null,
+      "type": null,
+      "status": "Done",
+      "start": null,
+      "end": null,
+      "point": 4
+    },
+    {
+      "title": "패스키 등록 서비스 구현",
+      "track": null,
+      "type": null,
+      "status": "Done",
+      "start": null,
+      "end": null,
+      "point": 4
+    },
+    {
+      "title": "PasskeyProvider를 런타임에 결정하는 구조의 필요성 고민",
+      "track": null,
+      "type": null,
+      "status": "Not started",
+      "start": null,
+      "end": null,
+      "point": 2
+    },
+    {
+      "title": "PasskeyClient 의 네이밍 문제 해결",
+      "track": null,
+      "type": null,
+      "status": "Done",
+      "start": null,
+      "end": null,
+      "point": 1
+    },
+    {
+      "title": "활성화, 비활성화 로직 개선",
+      "track": null,
+      "type": null,
+      "status": "Done",
+      "start": null,
+      "end": null,
+      "point": 2
+    },
+    {
+      "title": "linear 플러그인 적용",
+      "track": null,
+      "type": null,
+      "status": "Done",
+      "start": null,
+      "end": null,
+      "point": 1
+    },
+    {
+      "title": "Keycloak Admin API Mock 설계 및 구축",
+      "track": null,
+      "type": null,
+      "status": "Done",
+      "start": null,
+      "end": null,
+      "point": 4
+    },
+    {
+      "title": "테스트 빠르게 할 수 있는 환경 구축",
+      "track": null,
+      "type": null,
+      "status": "Done",
+      "start": null,
+      "end": null,
+      "point": 2
+    },
+    {
+      "title": "테스트 빠르게 할 수 있는 방법 조사",
+      "track": null,
+      "type": null,
+      "status": "Done",
+      "start": null,
+      "end": null,
+      "point": 2
+    },
+    {
+      "title": "패스키 설정 조회 API",
+      "track": null,
+      "type": null,
+      "status": "Done",
+      "start": null,
+      "end": null,
+      "point": 2
+    },
+    {
+      "title": "패스키 활성화 API",
+      "track": null,
+      "type": null,
+      "status": "Done",
+      "start": null,
+      "end": null,
+      "point": 2
+    },
+    {
+      "title": "패스키 비활성화 API",
+      "track": null,
+      "type": null,
+      "status": "Done",
+      "start": null,
+      "end": null,
+      "point": 2
+    },
+    {
+      "title": "Keycloak Realm 생성 서비스 구현",
+      "track": null,
+      "type": null,
+      "status": "Done",
+      "start": null,
+      "end": null,
+      "point": 4
+    },
+    {
+      "title": "Keycloak Admin 클라이언트 구현",
+      "track": null,
+      "type": null,
+      "status": "Done",
+      "start": null,
+      "end": null,
+      "point": 2
+    },
+    {
+      "title": "PasskeyConfiguration 엔티티/Repository 구현",
+      "track": null,
+      "type": null,
+      "status": "Done",
+      "start": null,
+      "end": null,
+      "point": 2
+    },
+    {
+      "title": "docker-compose 방식 gradle 로 변경",
+      "track": null,
+      "type": null,
+      "status": "Done",
+      "start": null,
+      "end": null,
+      "point": 2
+    }
   ]
 }
