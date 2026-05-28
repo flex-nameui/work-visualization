@@ -201,6 +201,21 @@
       font-size: 9px; color: #fff; background: var(--color-text-danger);
       padding: 1px 4px; border-radius: 3px; white-space: nowrap;
     }
+    /* dev merge 끝선 + 이후 작업 표시 */
+    .gantt-endline { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--color-text-primary); opacity: 0.55; }
+    .gantt-endline .tip {
+      position: absolute; top: -18px; left: 50%; transform: translateX(-50%);
+      font-size: 9px; color: var(--color-background-primary); background: var(--color-text-primary);
+      padding: 1px 4px; border-radius: 3px; white-space: nowrap; opacity: 0.9;
+    }
+    .gantt-bar.after-end { opacity: 0.4; }
+    .sched-task.after-end .ttl { color: var(--color-text-tertiary); }
+    .sched-task .after-badge {
+      flex: 0 0 auto; font-size: 9px; font-weight: 700;
+      color: var(--color-text-secondary); background: var(--color-background-tertiary);
+      border: 1px solid var(--color-border-secondary);
+      padding: 0 4px; border-radius: 3px; margin-right: 2px;
+    }
 
     /* Progress bars */
     .tprog-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
@@ -292,7 +307,17 @@
         return { ...t, startOffset: s, endOffset: e, durationDays: e - s + 1 };
       });
 
-      return { START, TOTAL_DAYS, TODAY, tasks };
+      // 프로젝트 종료 기준 = dev merge 작업 (없으면 null)
+      const devMerge = tasks.find((t) => /dev\s*merge/i.test(t.title) && t.startOffset !== null);
+      const PROJECT_END_OFFSET = devMerge ? devMerge.endOffset : null;
+      // dev merge 이후로 시작하는 작업에 afterEnd 플래그
+      if (PROJECT_END_OFFSET !== null) {
+        tasks.forEach((t) => { t.afterEnd = t.startOffset !== null && t.startOffset > PROJECT_END_OFFSET; });
+      } else {
+        tasks.forEach((t) => { t.afterEnd = false; });
+      }
+
+      return { START, TOTAL_DAYS, TODAY, tasks, PROJECT_END_OFFSET };
     }
 
     function offsetToDate(model, off) { return new Date(model.START + off * DAY); }
@@ -316,18 +341,19 @@
     // ---------- KPI 카드 ----------
     function renderKPI(model) {
       const root = document.getElementById("kpi-body");
-      const { tasks, TODAY, TOTAL_DAYS } = model;
+      const { tasks, TODAY, TOTAL_DAYS, PROJECT_END_OFFSET } = model;
       const dated = tasks.filter((t) => t.startOffset !== null);
 
-      // 작업 진척률 = Point(공수) 가중. point 없으면 1로 간주. 날짜 없는 과거 작업도 포함(프로젝트 전체 기준).
+      // 작업 진척률 = Point(공수) 가중. point 없으면 1로 간주. dev merge 이후 작업도 포함(전체 기준).
       const totalPt = tasks.reduce((s, t) => s + (t.point || 1), 0);
       const donePt = tasks.filter((t) => isDone(t.status)).reduce((s, t) => s + (t.point || 1), 0);
       const workPct = totalPt ? Math.round((donePt / totalPt) * 100) : 0;
 
-      const timePct = TOTAL_DAYS > 1 ? Math.round(clamp(TODAY / (TOTAL_DAYS - 1), 0, 1) * 100) : (TODAY >= 0 ? 100 : 0);
-
+      // KPI 기준선 = dev merge (있을 때). 없으면 max(end) 폴백.
       const lastEnd = dated.length ? Math.max(...dated.map((t) => t.endOffset)) : 0;
-      const remaining = lastEnd - TODAY;
+      const endRef = PROJECT_END_OFFSET !== null ? PROJECT_END_OFFSET : lastEnd;
+      const timePct = endRef > 0 ? Math.round(clamp(TODAY / endRef, 0, 1) * 100) : (TODAY >= 0 ? 100 : 0);
+      const remaining = endRef - TODAY;
       const doneCount = tasks.filter((t) => isDone(t.status)).length;
 
       const delayedTasks = dated
@@ -336,12 +362,13 @@
         .map((t) => ({ title: t.title, track: t.track, end: md(model, t.endOffset), overdue: TODAY - t.endOffset }));
       const delayed = delayedTasks.length;
 
+      const refLabel = PROJECT_END_OFFSET !== null ? `dev merge ${md(model, PROJECT_END_OFFSET)}` : `마지막 종료 ${md(model, lastEnd)}`;
       const cards = [
         { label: "작업 진척률", value: `${workPct}%`, sub: `Point 가중 · 완료 ${doneCount}/${tasks.length}개`,
           cls: workPct >= timePct ? "is-success" : "" },
-        { label: "시간 진척률", value: `${timePct}%`, sub: dated.length ? `${md(model, 0)} ~ ${md(model, TOTAL_DAYS - 1)}` : "-" },
+        { label: "시간 진척률", value: `${timePct}%`, sub: dated.length ? `${md(model, 0)} ~ ${md(model, endRef)}` : "-" },
         { label: "잔여 일수", value: remaining >= 0 ? `D-${remaining}` : `+${-remaining}일`,
-          sub: dated.length ? `마지막 종료 ${md(model, lastEnd)}` : "-", cls: remaining < 0 ? "is-danger" : "" },
+          sub: dated.length ? refLabel : "-", cls: remaining < 0 ? "is-danger" : "" },
         { label: "지연 작업", value: `${delayed}`,
           sub: delayed > 0 ? "클릭해서 목록 보기 ▾" : "종료일 지난 미완료 없음",
           cls: delayed > 0 ? "is-danger" : "is-success", clickable: delayed > 0 },
@@ -381,7 +408,7 @@
     // ---------- 트랙별 일정 & 진행률 (왼쪽: 진행바+제목+날짜 / 오른쪽: 정렬된 타임라인) ----------
     function renderSchedule(model) {
       const root = document.getElementById("sched-body");
-      const { tasks, TOTAL_DAYS, TODAY } = model;
+      const { tasks, TOTAL_DAYS, TODAY, PROJECT_END_OFFSET } = model;
       const dated = tasks.filter((t) => t.startOffset !== null);
       if (dated.length === 0) { root.innerHTML = `<div class="empty-state">표시할 일정이 없습니다.</div>`; return; }
 
@@ -428,15 +455,19 @@
           const kind = statusKind(t.status);
           const left = pct(t.startOffset);
           const width = Math.max(pct(t.durationDays), 0.8);
-          const ttl = `${t.title} (${t.start} ~ ${t.end}) · ${t.status ?? "-"}`;
+          const after = t.afterEnd ? " after-end" : "";
+          const daysAfter = t.afterEnd ? t.startOffset - PROJECT_END_OFFSET : 0;
+          const badge = t.afterEnd ? `<span class="after-badge">+${daysAfter}일</span>` : "";
+          const ttl = `${t.title} (${t.start} ~ ${t.end}) · ${t.status ?? "-"}${t.afterEnd ? " · dev merge 이후" : ""}`;
           rows += `
             <div class="gantt-trow">
-              <div class="sched-task" title="${esc(ttl)}">
+              <div class="sched-task${after}" title="${esc(ttl)}">
                 <span class="dot ${kind}"></span>
+                ${badge}
                 <span class="ttl">${esc(t.title)}</span>
                 <span class="meta">${range(t)} · ${t.point}P</span>
               </div>
-              <div class="gantt-lane"><div class="gantt-bar ${kind}" style="left:${left}%;width:${width}%" title="${esc(ttl)}"></div></div>
+              <div class="gantt-lane"><div class="gantt-bar ${kind}${after}" style="left:${left}%;width:${width}%" title="${esc(ttl)}"></div></div>
             </div>`;
         }
       }
@@ -445,6 +476,10 @@
       const todayLeft = pct(todayClamped);
       const outOfRange = TODAY < 0 || TODAY > TOTAL_DAYS - 1;
       const todayTip = outOfRange ? "오늘(범위 밖)" : "오늘";
+
+      const endLine = (PROJECT_END_OFFSET !== null)
+        ? `<div class="gantt-endline" style="left:${pct(PROJECT_END_OFFSET + 1)}%"><span class="tip">dev merge ${md(model, PROJECT_END_OFFSET)}</span></div>`
+        : "";
 
       root.innerHTML = `
         <div class="gantt-scroll">
@@ -457,6 +492,7 @@
               ${rows}
               <div class="gantt-overlay">
                 ${grids}
+                ${endLine}
                 <div class="gantt-today" style="left:${todayLeft}%"><span class="tip">${esc(todayTip)}</span></div>
               </div>
             </div>
