@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-28T13:03:10.000Z",
+  "generated_at": "2026-05-28T13:36:08.000Z",
   "source": "linear",
   "project": "패스키 구현",
   "tasks": [
@@ -9,7 +9,7 @@
       "type": "PR 업로드",
       "status": "Done",
       "start": "2026-05-11",
-      "end": "2026-05-12",
+      "end": "2026-05-27",
       "point": 2
     },
     {
@@ -36,7 +36,7 @@
       "type": "개발",
       "status": "In progress",
       "start": "2026-05-27",
-      "end": "2026-05-28",
+      "end": "2026-05-29",
       "point": 4
     },
     {
@@ -45,7 +45,7 @@
       "type": "리뷰 대기",
       "status": "In progress",
       "start": "2026-05-27",
-      "end": "2026-05-28",
+      "end": "2026-05-29",
       "point": 8
     },
     {
@@ -54,7 +54,7 @@
       "type": "PR 업로드",
       "status": "Done",
       "start": "2026-05-27",
-      "end": "2026-05-28",
+      "end": "2026-05-27",
       "point": 2
     },
     {
@@ -67,6 +67,15 @@
       "point": 1
     },
     {
+      "title": "frontend auth·services·user-profile 개발 (구현)",
+      "track": "프론트",
+      "type": "개발",
+      "status": "In progress",
+      "start": "2026-05-28",
+      "end": "2026-05-29",
+      "point": 8
+    },
+    {
       "title": "인증 설계 싱크",
       "track": "인증",
       "type": "개발",
@@ -74,6 +83,15 @@
       "start": "2026-05-28",
       "end": "2026-05-29",
       "point": 1
+    },
+    {
+      "title": "패스키 인증 개발 및 PR 업로드",
+      "track": "인증",
+      "type": "리뷰 대기",
+      "status": "Not started",
+      "start": "2026-05-29",
+      "end": "2026-06-01",
+      "point": 8
     },
     {
       "title": "operation-api PR 리뷰 대기",
@@ -90,16 +108,16 @@
       "type": "개발",
       "status": "Not started",
       "start": "2026-05-29",
-      "end": "2026-06-01",
+      "end": "2026-05-29",
       "point": 8
     },
     {
-      "title": "frontend auth·services·user-profile 개발 (구현)",
-      "track": "프론트",
-      "type": "개발",
-      "status": "In progress",
+      "title": "패스키 인증 코드 리뷰 반영",
+      "track": "인증",
+      "type": "리뷰 대기",
+      "status": "Not started",
       "start": "2026-06-01",
-      "end": "2026-06-02",
+      "end": "2026-06-03",
       "point": 8
     },
     {
@@ -116,18 +134,9 @@
       "track": "관리자",
       "type": "리뷰 반영",
       "status": "Not started",
-      "start": "2026-06-02",
-      "end": "2026-06-02",
+      "start": "2026-06-01",
+      "end": "2026-06-01",
       "point": 4
-    },
-    {
-      "title": "패스키 인증 개발 및 PR 업로드",
-      "track": "인증",
-      "type": "리뷰 대기",
-      "status": "Not started",
-      "start": "2026-06-02",
-      "end": "2026-06-03",
-      "point": 8
     },
     {
       "title": "dev merge (최종)",
@@ -135,25 +144,7 @@
       "type": "마일스톤",
       "status": "Not started",
       "start": "2026-06-03",
-      "end": "2026-06-03",
-      "point": 4
-    },
-    {
-      "title": "패스키 인증 코드 리뷰 반영",
-      "track": "인증",
-      "type": "리뷰 대기",
-      "status": "Not started",
-      "start": "2026-06-04",
-      "end": "2026-06-09",
-      "point": 8
-    },
-    {
-      "title": "메트릭 전략 싱크",
-      "track": "메트릭",
-      "type": "PR 업로드",
-      "status": "Not started",
-      "start": "2026-06-09",
-      "end": "2026-06-10",
+      "end": "2026-06-04",
       "point": 4
     },
     {
@@ -161,8 +152,17 @@
       "track": "마일스톤",
       "type": "마일스톤",
       "status": "Not started",
-      "start": "2026-06-11",
-      "end": "2026-06-15",
+      "start": "2026-06-04",
+      "end": "2026-06-04",
+      "point": 4
+    },
+    {
+      "title": "메트릭 전략 싱크",
+      "track": "메트릭",
+      "type": "PR 업로드",
+      "status": "Not started",
+      "start": "2026-06-05",
+      "end": "2026-06-05",
       "point": 4
     },
     {
