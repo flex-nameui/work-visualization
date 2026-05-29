@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-28T13:36:08.000Z",
+  "generated_at": "2026-05-29T10:06:32.000Z",
   "source": "linear",
   "project": "패스키 구현",
   "tasks": [
@@ -31,19 +31,10 @@
       "point": 1
     },
     {
-      "title": "operation-api 개발 및 PR 업로드",
-      "track": "관리자",
-      "type": "개발",
-      "status": "In progress",
-      "start": "2026-05-27",
-      "end": "2026-05-29",
-      "point": 4
-    },
-    {
       "title": "등록 설계 PR 피드백 반영",
       "track": "등록",
       "type": "리뷰 대기",
-      "status": "In progress",
+      "status": "Done",
       "start": "2026-05-27",
       "end": "2026-05-29",
       "point": 8
@@ -79,15 +70,15 @@
       "title": "인증 설계 싱크",
       "track": "인증",
       "type": "개발",
-      "status": "In progress",
+      "status": "Done",
       "start": "2026-05-28",
       "end": "2026-05-29",
       "point": 1
     },
     {
-      "title": "패스키 인증 개발 및 PR 업로드",
-      "track": "인증",
-      "type": "리뷰 대기",
+      "title": "패스키 등록 구현체 개발 후 PR",
+      "track": "등록",
+      "type": "개발",
       "status": "Not started",
       "start": "2026-05-29",
       "end": "2026-06-01",
@@ -103,22 +94,22 @@
       "point": 1
     },
     {
-      "title": "패스키 등록 구현체 개발 후 PR",
-      "track": "등록",
-      "type": "개발",
-      "status": "Not started",
-      "start": "2026-05-29",
-      "end": "2026-05-29",
-      "point": 8
-    },
-    {
-      "title": "패스키 인증 코드 리뷰 반영",
+      "title": "패스키 인증 개발 및 PR 업로드",
       "track": "인증",
       "type": "리뷰 대기",
       "status": "Not started",
-      "start": "2026-06-01",
-      "end": "2026-06-03",
+      "start": "2026-05-29",
+      "end": "2026-06-01",
       "point": 8
+    },
+    {
+      "title": "operation-api 개발 및 PR 업로드",
+      "track": "관리자",
+      "type": "개발",
+      "status": "In progress",
+      "start": "2026-06-01",
+      "end": "2026-06-01",
+      "point": 4
     },
     {
       "title": "등록 구현 코드 리뷰 반영",
@@ -128,6 +119,15 @@
       "start": "2026-06-01",
       "end": "2026-06-03",
       "point": 4
+    },
+    {
+      "title": "패스키 인증 코드 리뷰 반영",
+      "track": "인증",
+      "type": "리뷰 대기",
+      "status": "Not started",
+      "start": "2026-06-01",
+      "end": "2026-06-03",
+      "point": 8
     },
     {
       "title": "operation-api 코드 리뷰 반영",
