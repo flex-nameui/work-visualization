@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-29T10:06:32.000Z",
+  "generated_at": "2026-05-30T14:31:38.000Z",
   "source": "linear",
   "project": "패스키 구현",
   "tasks": [
@@ -76,10 +76,19 @@
       "point": 1
     },
     {
+      "title": "패스키 인증 개발 및 PR 업로드",
+      "track": "인증",
+      "type": "리뷰 대기",
+      "status": "In progress",
+      "start": "2026-05-29",
+      "end": "2026-06-01",
+      "point": 8
+    },
+    {
       "title": "패스키 등록 구현체 개발 후 PR",
       "track": "등록",
       "type": "개발",
-      "status": "Not started",
+      "status": "In progress",
       "start": "2026-05-29",
       "end": "2026-06-01",
       "point": 8
@@ -92,15 +101,6 @@
       "start": "2026-05-29",
       "end": "2026-05-29",
       "point": 1
-    },
-    {
-      "title": "패스키 인증 개발 및 PR 업로드",
-      "track": "인증",
-      "type": "리뷰 대기",
-      "status": "Not started",
-      "start": "2026-05-29",
-      "end": "2026-06-01",
-      "point": 8
     },
     {
       "title": "operation-api 개발 및 PR 업로드",
