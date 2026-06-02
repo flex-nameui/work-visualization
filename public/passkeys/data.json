@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-02T00:21:02.000Z",
+  "generated_at": "2026-06-02T01:50:42.000Z",
   "source": "linear",
   "project": "패스키 구현",
   "tasks": [
@@ -76,6 +76,15 @@
       "point": 1
     },
     {
+      "title": "operation-api PR 리뷰 대기",
+      "track": "관리자",
+      "type": "리뷰 대기",
+      "status": "Not started",
+      "start": "2026-05-29",
+      "end": "2026-06-04",
+      "point": 1
+    },
+    {
       "title": "패스키 인증 개발 및 PR 업로드",
       "track": "인증",
       "type": "리뷰 대기",
@@ -94,13 +103,13 @@
       "point": 8
     },
     {
-      "title": "operation-api PR 리뷰 대기",
+      "title": "operation-api 코드 리뷰 반영",
       "track": "관리자",
-      "type": "리뷰 대기",
+      "type": "리뷰 반영",
       "status": "Not started",
-      "start": "2026-05-29",
-      "end": "2026-05-29",
-      "point": 1
+      "start": "2026-06-01",
+      "end": "2026-06-05",
+      "point": 4
     },
     {
       "title": "operation-api 개발 및 PR 업로드",
@@ -108,16 +117,7 @@
       "type": "개발",
       "status": "Not started",
       "start": "2026-06-01",
-      "end": "2026-06-01",
-      "point": 4
-    },
-    {
-      "title": "operation-api 코드 리뷰 반영",
-      "track": "관리자",
-      "type": "리뷰 반영",
-      "status": "Not started",
-      "start": "2026-06-01",
-      "end": "2026-06-01",
+      "end": "2026-06-04",
       "point": 4
     },
     {
