@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-30T14:31:38.000Z",
+  "generated_at": "2026-06-02T00:21:02.000Z",
   "source": "linear",
   "project": "패스키 구현",
   "tasks": [
@@ -106,7 +106,16 @@
       "title": "operation-api 개발 및 PR 업로드",
       "track": "관리자",
       "type": "개발",
-      "status": "In progress",
+      "status": "Not started",
+      "start": "2026-06-01",
+      "end": "2026-06-01",
+      "point": 4
+    },
+    {
+      "title": "operation-api 코드 리뷰 반영",
+      "track": "관리자",
+      "type": "리뷰 반영",
+      "status": "Not started",
       "start": "2026-06-01",
       "end": "2026-06-01",
       "point": 4
@@ -128,15 +137,6 @@
       "start": "2026-06-01",
       "end": "2026-06-03",
       "point": 8
-    },
-    {
-      "title": "operation-api 코드 리뷰 반영",
-      "track": "관리자",
-      "type": "리뷰 반영",
-      "status": "Not started",
-      "start": "2026-06-01",
-      "end": "2026-06-01",
-      "point": 4
     },
     {
       "title": "dev merge (최종)",
@@ -172,6 +172,33 @@
       "status": "Not started",
       "start": "2026-06-11",
       "end": "2026-06-12",
+      "point": 1
+    },
+    {
+      "title": "패스키 테스트 코드 리스트업 후 싱크",
+      "track": null,
+      "type": null,
+      "status": "Done",
+      "start": null,
+      "end": null,
+      "point": 4
+    },
+    {
+      "title": "auth passkey: 인라인 makeRemote(passkeyRemotes/passkeyMethod) → codegen import로 정리",
+      "track": null,
+      "type": null,
+      "status": "Not started",
+      "start": null,
+      "end": null,
+      "point": 1
+    },
+    {
+      "title": "settings passkey: 인라인 updatePasskeySettingRemote → codegen import로 정리",
+      "track": null,
+      "type": null,
+      "status": "Not started",
+      "start": null,
+      "end": null,
       "point": 1
     },
     {
